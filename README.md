@@ -10,7 +10,7 @@ The report types considered in this study include: angiogram reports, cardiac ul
 ## B. Dataset Curation Procedure and Statistical Information of the Curated Data
 
 <p align="center">
-  <img src="./supplementary/Fig1_HTAN_MHHTAN_Architecture.png" alt="Architecture of HTAN and MHHTAN" width="600"/>
+  <img src="./Fig1_HTAN_MHHTAN_Architecture.png" alt="Architecture of HTAN and MHHTAN" width="600"/>
 </p>
 
 **Fig. 1.** (a) Architecture of the proposed HTAN. (b) Architecture of the proposed MHHTAN.
