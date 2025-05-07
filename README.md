@@ -78,3 +78,84 @@ Finally, the resulting patients were classified into six cancer categories based
 [1] C.-W. Kao et al., "Accuracy of long-form data in the Taiwan cancer registry," *Journal of the Formosan Medical Association*, vol. 120, no. 11, pp. 2037-2041, 2021.
 
 [2] 衛生福利部國民健康署. (2022). *台灣癌症登記長表摘錄手冊*.
+
+
+
+# patient_stratification.py - Cancer Registry Patient Stratification & Data Conversion
+
+This script performs patient-level stratified dataset generation for cancer registry tasks. It scores and splits patients based on label distributions, then outputs structured JSON and compressed GZIP files for downstream model training.
+
+---
+
+# patient_stratification.py - Cancer Registry Patient Stratification & Data Conversion
+
+This script performs patient-level stratified dataset generation for cancer registry tasks. It scores and splits patients based on label distributions, then outputs structured JSON and compressed GZIP files for downstream model training.
+
+---
+
+## Input Data Format
+
+```json
+{
+  "Reports": [
+    {
+      "Sentences": ["sentence1", "sentence2", "..."],
+      "Reports_Type": "e.g., Pathology"
+    },
+    ...
+  ],
+  "ID": "1234",
+  "HISTOLOGY": "...",
+  "BEHAVIOR": "...",
+  "GRADE_P": "...",
+  ...
+}
+```
+
+- The file should contain a list of such patient records.
+- Each field like **HISTOLOGY**,**GRADE_P**,etc., corresponds to a cancer registry task label
+
+### Command-line Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `--model-type` | No | Output format: `mhhtan` (with report type), or `han` (without). Default: `mhhtan`. |
+| `--raw-data-folder` | Yes | Path to the folder containing raw JSON patient files. |
+| `--cancers` | No | Comma-separated list of cancer types to process. Default: `breast,colorectal,liver,oral,prostate,uterus`. |
+| `--hospital` | No | Hospital prefix for file naming. Default: `kmuh`. |
+| `--file-encoding` | No | Encoding of the input files. Default: `utf-8`. |
+| `--labels` | No | Comma-separated cancer registry label fields. Default: includes 23 common fields. |
+| `--data-rows` | No | Field list to include in output. Default: full patient structure. |
+| `--stratification-number` | No | Number of stratified partitions. Default: 4. |
+| `--trainset-ratio` | No | Proportion of training samples per split. Default: 0.8. |
+| `--validset-ratio` | No | Proportion of validation samples per split. Default: 0.1. |
+| `--id-proportion-path` | No | Output CSV path for ID distribution. Default: `./id_proportion.csv`. |
+| `--label-distribute-path` | No | Output CSV path for label distribution. Default: `./labels_distribute.csv`. |
+| `--output-json-path` | No | Folder for saving output JSON files. Default: `./json_data`. |
+| `--output-gzip-path` | No | Folder for saving output GZIP files. Default: `./gzip_data`. |
+
+### Usage Example
+
+```bash
+python patient_stratification.py \
+  --model-type mhhtan \
+  --raw-data-folder ./raw_data \
+  --output-json-path ./json_data \
+  --output-gzip-path ./gzip_data \
+  --hospital kmuh
+  ```
+
+---
+
+
+### Output Structure
+
+Each output JSON contains:
+
+```json
+{
+  "data": [...],       // list of tuples (ID, Reports, labels...)
+  "splits": [0,1,2...], // 0: train, 1: test, 2: val
+  "rows": [...]        // feature/label field names
+}
+```
